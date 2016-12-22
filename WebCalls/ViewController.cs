@@ -10,6 +10,7 @@ using UIKit;
 using System.Net;
 using Foundation;
 using System.IO;
+using RestSharp;
 
 namespace WebCalls
 {
@@ -25,6 +26,23 @@ namespace WebCalls
 			base.ViewDidLoad();
 			// Perform any additional setup after loading the view, typically from a nib.
 
+			var client = new RestClient("http://rxnav.nlm.nih.gov/REST/RxTerms/rxcui/");
+
+			var request = new RestRequest(String.Format("{0}/allinfo", "198440"));
+			//client.ExecuteAsync(request, response =>
+			//{
+			//	Console.WriteLine(response.Content);
+
+
+			//});
+
+			var response = client.Execute<Item>(request);
+			Console.WriteLine(response.Data.rxtermsProperties);
+
+		}
+
+		void RunHttpRequest()
+		{
 			var request = HttpWebRequest.Create(@"http://rxnav.nlm.nih.gov/REST/RxTerms/rxcui/198440/allinfo");
 			request.ContentType = "application/json";
 			request.Method = "GET";
@@ -53,5 +71,10 @@ namespace WebCalls
 			base.DidReceiveMemoryWarning();
 			// Release any cached data, images, etc that aren't in use.
 		}
+	}
+
+	public class Item
+	{
+		public string rxtermsProperties { get; set; }
 	}
 }
